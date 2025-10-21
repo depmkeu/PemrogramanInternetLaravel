@@ -3,61 +3,65 @@
 namespace App\Http\Controllers;
 
 use App\Models\Mahasiswa;
+use App\Models\ProgramStudi;
 use Illuminate\Http\Request;
 
 class MahasiswaController extends Controller
 {
-    // Menampilkan daftar mahasiswa
     public function index()
     {
-        $mahasiswa = Mahasiswa::orderBy('id','desc')->get();
-        return view('mahasiswa.index', compact('mahasiswa'));
+        $mahasiswas = Mahasiswa::with('programStudi.fakultas')->orderBy('id', 'desc')->get();
+        return view('mahasiswa.index', compact('mahasiswas'));
     }
 
-    // Menampilkan form tambah mahasiswa
     public function create()
     {
-        return view('mahasiswa.create');
+        $fakultas = \App\Models\Fakultas::orderBy('nama_fakultas')->get();
+        $programstudi = ProgramStudi::with('fakultas')->orderBy('nama_prodi')->get();
+        return view('mahasiswa.create', compact('fakultas', 'programstudi'));
     }
 
-    // Simpan mahasiswa baru ke DB
     public function store(Request $request)
     {
         $request->validate([
             'nim' => 'required|unique:mahasiswas,nim|min:4',
             'nama' => 'required',
-            'prodi' => 'required'
+            'program_studi_id' => 'required|exists:program_studis,id'
         ]);
 
-        Mahasiswa::create($request->only('nim','nama','prodi'));
+        Mahasiswa::create($request->only('nim', 'nama', 'program_studi_id'));
 
-        return redirect()->route('mahasiswa.index')->with('success','Mahasiswa disimpan.');
+        return redirect()->route('mahasiswa.index')->with('success', 'Mahasiswa berhasil disimpan.');
     }
 
-    // Menampilkan form edit mahasiswa
     public function edit(Mahasiswa $mahasiswa)
     {
-        return view('mahasiswa.edit', compact('mahasiswa'));
+        $programstudi = ProgramStudi::with('fakultas')->orderBy('nama_prodi')->get();
+        return view('mahasiswa.edit', compact('mahasiswa', 'programstudi'));
     }
 
-    // Update mahasiswa
     public function update(Request $request, Mahasiswa $mahasiswa)
     {
         $request->validate([
-            'nim' => 'required|unique:mahasiswas,nim,' . $mahasiswa->id . '|min:4',
+            'nim' => 'required|min:4|unique:mahasiswas,nim,' . $mahasiswa->id,
             'nama' => 'required',
-            'prodi' => 'required'
+            'program_studi_id' => 'required|exists:program_studis,id'
         ]);
 
-        $mahasiswa->update($request->only('nim','nama','prodi'));
+        $mahasiswa->update($request->only('nim', 'nama', 'program_studi_id'));
 
-        return redirect()->route('mahasiswa.index')->with('success','Data mahasiswa diperbarui.');
+        return redirect()->route('mahasiswa.index')->with('success', 'Data mahasiswa berhasil diperbarui.');
     }
 
-    // Hapus mahasiswa
     public function destroy(Mahasiswa $mahasiswa)
     {
         $mahasiswa->delete();
-        return redirect()->route('mahasiswa.index')->with('success','Mahasiswa berhasil dihapus.');
+        return redirect()->route('mahasiswa.index')->with('success', 'Mahasiswa berhasil dihapus.');
+    }
+
+    public function getProgramStudi($fakultas_id)
+    {
+        $prodi = ProgramStudi::where('fakultas_id', $fakultas_id)->get();
+        return response()->json($prodi);
     }
 }

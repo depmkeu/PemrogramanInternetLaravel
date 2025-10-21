@@ -1,68 +1,30 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Tambah Mahasiswa (Dummy)</title>
-    <style>
-        body {
-            font-family: Arial;
-            background: #f0f0f0;
-            padding: 40px;
-        }
+@extends('layouts.app')
 
-        form {
-            background: white;
-            width: 400px;
-            margin: auto;
-            padding: 20px 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
+@section('title', 'Tambah Mahasiswa Dummy')
+@section('header', 'Tambah Mahasiswa (Tanpa Database)')
 
-        h2 {
-            text-align: center;
-        }
-
-        label {
-            font-weight: bold;
-        }
-
-        input[type=text] {
-            width: 100%;
-            padding: 8px;
-            margin: 6px 0 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        button, a {
-            display: inline-block;
-            padding: 8px 14px;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            text-decoration: none;
-        }
-
-        button { background-color: #4CAF50; }
-        a { background-color: #777; }
-    </style>
-</head>
-<body>
-    <form action="/mahasiswa-dummy" method="POST">
-        @csrf
-        <h2>Tambah Mahasiswa</h2>
-
-        <label>NIM:</label>
-        <input type="text" name="nim">
-
-        <label>Nama:</label>
-        <input type="text" name="nama">
-
-        <label>Prodi:</label>
-        <input type="text" name="prodi">
-
-        <button type="submit">Simpan</button>
-        <a href="/mahasiswa-dummy">Kembali</a>
-    </form>
-</body>
-</html>
+@section('content')
+<div class="card shadow-sm mx-auto" style="max-width: 600px;">
+    <div class="card-body">
+        <form action="/mahasiswa-dummy" method="POST">
+            @csrf
+            <div class="mb-3">
+                <label class="form-label fw-bold">NIM</label>
+                <input type="text" name="nim" class="form-control" placeholder="Masukkan NIM">
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">Nama</label>
+                <input type="text" name="nama" class="form-control" placeholder="Masukkan Nama Mahasiswa">
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">Prodi</label>
+                <input type="text" name="prodi" class="form-control" placeholder="Masukkan Program Studi">
+            </div>
+            <div class="d-flex justify-content-end mt-3">
+                <a href="/mahasiswa-dummy" class="btn btn-secondary me-2">Kembali</a>
+                <button type="submit" class="btn btn-success">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+@endsection
