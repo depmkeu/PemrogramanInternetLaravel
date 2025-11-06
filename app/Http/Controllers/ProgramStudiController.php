@@ -56,4 +56,10 @@ class ProgramStudiController extends Controller
 
         return redirect()->route('programstudi.index')->with('success', 'Program Studi dihapus.');
     }
+
+    public function getByFakultas($fakultas_id)
+    {
+        $prodi = ProgramStudi::where('fakultas_id', $fakultas_id)->get();
+        return response()->json($prodi);
+    }
 }
