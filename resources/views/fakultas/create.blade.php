@@ -9,14 +9,22 @@
         .card { border-radius: 15px; border: 1px solid #bee3f8; }
         .btn-yellow { background-color: #facc15; color: #1e3a8a; }
         .btn-yellow:hover { background-color: #eab308; color: #1e3a8a; }
+
+        /* Tambahkan gaya hijau agar sama kayak halaman Data Fakultas */
+        .btn-green { background-color: #22c55e; color: white; }
+        .btn-green:hover { background-color: #16a34a; color: white; }
+
         .form-label { color: #1d4ed8; font-weight: 600; }
     </style>
 </head>
 <body>
 <div class="container py-5" style="max-width: 600px;">
     <div class="card shadow-sm p-4">
-        <h3 class="text-center text-primary mb-4">Tambah Fakultas</h3>
-        <a href="{{ url('/dashboard') }}" class="btn btn-primary mb-3">⬅️ Kembali ke Dashboard</a>
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <h3 class="text-primary fw-bold mb-0">Tambah Fakultas</h3>
+            <!-- Tombol ke Dashboard di kanan atas -->
+            <a href="{{ url('/dashboard') }}" class="btn btn-dark">← Kembali ke Dashboard</a>
+        </div>
 
         <form method="POST" action="{{ route('fakultas.store') }}">
             @csrf
@@ -27,7 +35,7 @@
 
             <div class="d-flex justify-content-between">
                 <a href="{{ route('fakultas.index') }}" class="btn btn-secondary">Kembali</a>
-                <button type="submit" class="btn btn-yellow">Simpan</button>
+                <button type="submit" class="btn btn-green">Simpan</button>
             </div>
         </form>
     </div>

@@ -27,10 +27,6 @@
                 </div>
 
                 <hr class="my-10 border-blue-700">
-
-                <a href="{{ url('/mahasiswa-dummy') }}" 
-                   class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded text-sm shadow">
-                    Versi Dummy (Tanpa Database)
                 </a>
             </div>
         </div>
