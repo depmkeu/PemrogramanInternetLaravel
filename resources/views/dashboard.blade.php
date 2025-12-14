@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-bold text-3xl text-blue-100 leading-tight text-center">
+        <h2 class="font-bold text-3xl text-gray-800 leading-tight text-center">
             {{ __('Menu Utama - Sistem Mahasiswa') }}
         </h2>
     </x-slot>

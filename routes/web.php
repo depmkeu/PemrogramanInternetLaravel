@@ -1,48 +1,46 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\ProgramStudiController;
 use App\Http\Controllers\FakultasController;
-use Illuminate\Support\Facades\Route;
 
-// HALAMAN UTAMA
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::view('/', 'welcome')->name('home');
 
-// DASHBOARD
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+require __DIR__.'/auth.php';
 
-// ROUTE KHUSUS ADMIN
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::resource('mahasiswa', MahasiswaController::class);
-    Route::resource('programstudi', ProgramStudiController::class)->except(['show']);
-    Route::resource('fakultas', FakultasController::class);
-});
+Route::middleware('auth')->group(function () {
 
-// ROUTE UNTUK SEMUA USER LOGIN (admin & user biasa)
-Route::middleware(['auth'])->group(function () {
-   // Hanya boleh lihat daftar mahasiswa dan detail
-    Route::get('/mahasiswa', [MahasiswaController::class, 'index'])->name('mahasiswa.index');
-    Route::get('/mahasiswa/{id}', [MahasiswaController::class, 'show'])->name('mahasiswa.show');
+    Route::view('/dashboard', 'dashboard')->name('dashboard');
 
-    // Lihat program studi (tanpa edit)
-    Route::get('/programstudi', [ProgramStudiController::class, 'index'])->name('programstudi.index');
+    Route::prefix('profile')->name('profile.')->group(function () {
+        Route::get('/', [ProfileController::class, 'edit'])->name('edit');
+        Route::patch('/', [ProfileController::class, 'update'])->name('update');
+        Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
+    });
 
-    // Lihat fakultas (tanpa edit)
-    Route::get('/fakultas', [FakultasController::class, 'index'])->name('fakultas.index');
+    // READ ONLY (semua user login boleh akses)
+    Route::resource('mahasiswa', MahasiswaController::class)
+        ->only(['index', 'show'])
+        ->where(['mahasiswa' => '[0-9]+']);
 
-    // Profil sendiri
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::resource('fakultas', FakultasController::class)->only(['index']);
+    Route::resource('programstudi', ProgramStudiController::class)->only(['index']);
 
-    // Dropdown dinamis
-    Route::get('/programstudi/fakultas/{fakultas_id}', [MahasiswaController::class, 'getProgramStudi'])
+    Route::get('programstudi/fakultas/{fakultas_id}', [MahasiswaController::class, 'getProgramStudi'])
         ->name('programstudi.byFakultas');
 });
 
-require __DIR__ . '/auth.php';
+Route::middleware(['auth', 'admin'])->group(function () {
+
+    // ADMIN CRUD
+    Route::resource('mahasiswa', MahasiswaController::class)
+        ->except(['index', 'show']);
+
+    Route::resource('fakultas', FakultasController::class)
+        ->except(['index', 'show']);
+
+    Route::resource('programstudi', ProgramStudiController::class)
+        ->except(['index', 'show']);
+});

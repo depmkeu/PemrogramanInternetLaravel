@@ -81,4 +81,10 @@ class MahasiswaController extends Controller
 
         return response()->json($prodi);
     }
+
+    public function show(Mahasiswa $mahasiswa)
+{
+    $mahasiswa->load(['programStudi.fakultas']);
+    return view('mahasiswa.show', compact('mahasiswa'));
+}
 }
